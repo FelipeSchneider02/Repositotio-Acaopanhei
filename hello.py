@@ -2,7 +2,7 @@ import customtkinter as ctk
 import os
 import sys
 from services import autenticar_usuario
-import main
+from main import Main
 from register import TelaRegistro
 
 
@@ -61,17 +61,17 @@ class Hello(ctk.CTk):
 
         # chama função autenticar usuario dentro de services.py e retorna o id usuario logado e a lista de pets que
         # esse usuario tem
-        self.id_usuario_logado, self.lista_pets_logado = autenticar_usuario(self.login, self.password)
+        self.id_usuario_logado = autenticar_usuario(self.login, self.password)
 
         try:  # verifica se login e senha batem com banco de dados
             if not (self.id_usuario_logado is None):
                 # tratativa da tela
-                self.toplevel_window = main.Main(self.id_usuario_logado, self.lista_pets_logado)
+                self.toplevel_window = Main(self.id_usuario_logado)
                 self.withdraw()  # esconde a tela App
                 self.toplevel_window.focus()  # focar tela
                 self.errologin_label.configure(text="")  # tira a mensagem de erro de login se tiver
                 self.login_entry.delete(0, "end")  # limpa campo login
-                self.password_entry.delete(0, "end")  # limpa compo password
+                self.password_entry.delete(0, "end")  # limpa campo password
             else:
                 self.errologin_label.configure(text="Login ou senha incorreto")
                 self.errologin_label.place(x=142, y=210)

@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from services import dados_owners
+from editownerview import EditOwnerView
 
 
 class OwnerView(ctk.CTkToplevel):
@@ -7,7 +8,7 @@ class OwnerView(ctk.CTkToplevel):
         super().__init__(*args, **kwargs)  # inicializa tela Main
         self.master = master
         self.id_usuario_logado = id_usuario_logado
-        self.config_tela_main()  # carrega as config da tela main
+        self.config_tela_main()  # carrega as config da tela
         self.pegar_infos_owner()
         self.widgets_view()  # carrega os widgtes do frame
 
@@ -22,10 +23,12 @@ class OwnerView(ctk.CTkToplevel):
         dados = dados_owners(self.id_usuario_logado)
 
         self.nome = dados["nome"]
-        self.celular_formatado = dados["celular"]
+        self.celular_formatado = dados["celular_formatado"]
         self.login = dados["login"]
 
     def widgets_view(self):
+        for widget in self.winfo_children():
+            widget.destroy()  # Remove todos os widgets antes de recriar
         # ====================================criação de widgets========================================================
         # frame
         tela_frame = ctk.CTkScrollableFrame(self, width=400, height=350, corner_radius=10)
@@ -37,7 +40,7 @@ class OwnerView(ctk.CTkToplevel):
 
         login_label = ctk.CTkLabel(tela_frame, text="Login", font=("Roboto", 14), fg_color="gray22",
                                    width=100, height=30)
-        owner_login_label = ctk.CTkLabel(tela_frame, text=self.nome, font=("Roboto", 14), anchor="w",
+        owner_login_label = ctk.CTkLabel(tela_frame, text=self.login, font=("Roboto", 14), anchor="w",
                                          width=200, height=30)
 
         nome_label = ctk.CTkLabel(tela_frame, text="Nome", font=("Roboto", 14), fg_color="gray22", width=100, height=30)
@@ -76,7 +79,13 @@ class OwnerView(ctk.CTkToplevel):
         voltar_button.grid(row=6, column=0, pady=10, sticky="e", columnspan=3)
 
     def editar_owner(self):
-        ...
+        self.withdraw()
+        self.toplevel_window = EditOwnerView(self, self.id_usuario_logado)
+
+    def atualizar_dados(self):
+        # atualiza os dados quando for editado
+        self.pegar_infos_owner()  # Recarrega os dados do banco
+        self.widgets_view()  # Recria os widgets com os novos dados
 
     def deletar_owner(self):
         ...

@@ -110,7 +110,7 @@ class Create(ctk.CTkToplevel):
         dados = dados_owners(self.id_usuario_logado)
 
         nome_responsavel = dados["nome"]
-        celular_formatado = dados["celular"]
+        celular_formatado = dados["celular_formatado"]
 
         # formata sexo do pet para texto
         if self.sexo == "M":
@@ -154,6 +154,7 @@ Olá {nome_responsavel} encontrei o {self.nome_pet}%0A
 
     def voltartela(self):
         if self.master:
+            self.master.atualizar_dados()
             self.master.deiconify()
         self.destroy()
 

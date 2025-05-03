@@ -1,4 +1,5 @@
 import customtkinter as ctk
+from editpetview import EditPetView
 from services import dados_pets
 
 
@@ -34,6 +35,8 @@ class PetView(ctk.CTkToplevel):
         self.observacao = dados["observacao"]
 
     def widgets_view(self):
+        for widget in self.winfo_children():
+            widget.destroy()  # Remove todos os widgets antes de recriar
         # ====================================criação de widgets========================================================
         # frame
         tela_frame = ctk.CTkScrollableFrame(self, width=400, height=350, corner_radius=10)
@@ -88,13 +91,20 @@ class PetView(ctk.CTkToplevel):
         voltar_button.grid(row=6, column=0, pady=10, sticky="e", columnspan=3)
 
     def editar_pet(self):
-        ...
+        self.withdraw()
+        self.toplevel_window = EditPetView(self, self.id_pet_view)
+
+    def atualizar_dados(self):
+        # atualiza os dados quando for editado
+        self.pegar_infos_pet()  # Recarrega os dados do banco
+        self.widgets_view()  # Recria os widgets com os novos dados
 
     def deletar_pet(self):
         ...
 
     def voltar_tela(self):
         if self.master:
+            self.master.atualizar_dados()
             self.master.deiconify()
         self.destroy()
 

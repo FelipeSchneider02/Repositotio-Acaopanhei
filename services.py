@@ -8,17 +8,20 @@ def autenticar_usuario(login, password):
             WHERE login = ? AND password = ?
         """, (login, password))
     resultado = databaser.cur.fetchone()
-
-    # se sim retorna os pets cadastrados
     if resultado:
         id_usuario = resultado[0]
-        databaser.cur.execute("""
+        return id_usuario
+    return None
+
+
+def lista_pets_logado(id_usuario):
+    # se sim retorna os pets cadastrados
+    databaser.cur.execute("""
                 SELECT nome_pet FROM Pets
                 WHERE id_responsavel = ?
-            """, (id_usuario,))
-        lista_pets = [tupla[0] for tupla in databaser.cur.fetchall()]
-        return id_usuario, lista_pets
-    return None, None
+        """, (id_usuario,))
+    lista_pets = [tupla[0] for tupla in databaser.cur.fetchall()]
+    return lista_pets
 
 
 class RegisterService:
@@ -118,6 +121,38 @@ def dados_owners(id_usuario_logado):
 
     return {
         "nome": dados_owner[0],
-        "celular": celular_formatado,
-        "login": dados_owner[3]
+        "ddd": dados_owner[1],
+        "celular": dados_owner[2],
+        "login": dados_owner[3],
+        "celular_formatado": celular_formatado,
     }
+
+
+def atualizar_owner(id_usuario_logado, novo_login, novo_nome, novo_ddd, novo_celular):
+    # pega o id e atualiza os dados do responsável
+    databaser.cur.execute("""
+        UPDATE Responsaveis SET nome_responsavel = ?, ddd = ?, celular = ? WHERE id_usuario = ?
+    """, (novo_nome, novo_ddd, novo_celular, id_usuario_logado))
+
+    # pega o id e atualiza o login
+    databaser.cur.execute("""
+        UPDATE Usuarios SET login = ? WHERE id_usuario = ?
+    """, (novo_login, id_usuario_logado))
+
+    # salva o banco de dados
+    databaser.conn.commit()
+
+
+def atualizar_pet(id_pet_view, novo_nome, novo_raca, novo_sexo, novo_obs):
+    # pega o id e atualiza os dados do pet
+    databaser.cur.execute("""
+        UPDATE Pets SET nome_pet = ?, raca_pet = ?, sexo_pet = ? WHERE id_pet = ?
+    """, (novo_nome, novo_raca, novo_sexo, id_pet_view))
+
+    # pega o id e atualiza observação
+    databaser.cur.execute("""
+        UPDATE Observacoes SET observacao = ? WHERE id_pet = ?
+    """, (novo_obs, id_pet_view))
+
+    # salva o banco de dados
+    databaser.conn.commit()
