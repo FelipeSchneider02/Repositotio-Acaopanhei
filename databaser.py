@@ -22,7 +22,7 @@ sql_statements = [
         ddd VARCHAR(2) NOT NULL,
         celular VARCHAR(10) NOT NULL,
         id_usuario INT NOT NULL,
-        FOREIGN KEY (id_usuario) REFERENCES Usuarios (id_usuario)
+        FOREIGN KEY (id_usuario) REFERENCES Usuarios (id_usuario) ON DELETE CASCADE
     );
     """,
     """
@@ -32,7 +32,7 @@ sql_statements = [
         raca_pet VARCHAR(100) NOT NULL,
         sexo_pet CHAR(1) NOT NULL,
         id_responsavel INT NOT NULL,
-        FOREIGN KEY (id_responsavel) REFERENCES Responsaveis (id_responsavel)
+        FOREIGN KEY (id_responsavel) REFERENCES Responsaveis (id_responsavel) ON DELETE CASCADE
     );
     """,
     """
@@ -40,7 +40,7 @@ sql_statements = [
         id_observacoes INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
         id_pet INT NOT NULL,
         observacao VARCHAR(255),
-        FOREIGN KEY (id_pet) REFERENCES Pets (id_pet)
+        FOREIGN KEY (id_pet) REFERENCES Pets (id_pet) ON DELETE CASCADE
     );
     """
 ]

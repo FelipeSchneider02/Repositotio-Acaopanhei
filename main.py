@@ -16,7 +16,14 @@ class Main(ctk.CTkToplevel):
 
     def pegar_pets(self):
         lista_pets = lista_pets_logado(self.id_usuario_logado)
+
+        if lista_pets is None:
+            print("bateu aqui")
+            self.voltar_tela()
+        print(lista_pets)
+
         self.n = lista_pets  # carrega os pets pelo id do usuario logado
+        print("bateu aqui1")
 
     def config_tela_main(self):
         self.title("Main")  # titulo que aparece na tela
@@ -25,6 +32,9 @@ class Main(ctk.CTkToplevel):
         self.protocol("WM_DELETE_WINDOW", self.fechar_tudo)  # chama método ao fechar
 
     def widgets_frame(self):
+        if not self.winfo_exists():
+            return  # Cancela a função se a janela já não existe
+
         for widget in self.winfo_children():
             widget.destroy()  # Remove todos os widgets antes de recriar
         # ====================================criação de widgets========================================================

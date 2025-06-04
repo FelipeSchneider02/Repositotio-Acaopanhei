@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from services import dados_owners
 from editownerview import EditOwnerView
+from ownerdeleteview import OwnerDeleteView
 
 
 class OwnerView(ctk.CTkToplevel):
@@ -22,11 +23,18 @@ class OwnerView(ctk.CTkToplevel):
         # retorna um dicionario usando a função dados_owner para pegar as informações do responsável
         dados = dados_owners(self.id_usuario_logado)
 
+        if dados is None:  # se usuario for deletado, ele volta mais uma tela
+            self.voltar_tela()
+            return
+
         self.nome = dados["nome"]
         self.celular_formatado = dados["celular_formatado"]
         self.login = dados["login"]
 
     def widgets_view(self):
+        if not self.winfo_exists():
+            return  # Cancela a função se a janela já não existe
+
         for widget in self.winfo_children():
             widget.destroy()  # Remove todos os widgets antes de recriar
         # ====================================criação de widgets========================================================
@@ -88,10 +96,12 @@ class OwnerView(ctk.CTkToplevel):
         self.widgets_view()  # Recria os widgets com os novos dados
 
     def deletar_owner(self):
-        ...
+        self.withdraw()
+        self.toplevel_window = OwnerDeleteView(self, self.id_usuario_logado)
 
     def voltar_tela(self):
         if self.master:
+            self.master.atualizar_dados()
             self.master.deiconify()
         self.destroy()
 

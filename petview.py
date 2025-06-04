@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from editpetview import EditPetView
+from petdeleteview import PetDeleteView
 from services import dados_pets
 
 
@@ -22,6 +23,10 @@ class PetView(ctk.CTkToplevel):
         # retorna um dicionario usando a função dados_pets para pegar as informações do pet
         dados = dados_pets(self.id_pet_view)
 
+        if dados is None:
+            self.voltar_tela()
+            return
+
         self.nome = dados["nome"]
         self.raca = dados["raca"]
 
@@ -35,6 +40,9 @@ class PetView(ctk.CTkToplevel):
         self.observacao = dados["observacao"]
 
     def widgets_view(self):
+        if not self.winfo_exists():
+            return  # Cancela a função se a janela já não existe
+
         for widget in self.winfo_children():
             widget.destroy()  # Remove todos os widgets antes de recriar
         # ====================================criação de widgets========================================================
@@ -95,12 +103,16 @@ class PetView(ctk.CTkToplevel):
         self.toplevel_window = EditPetView(self, self.id_pet_view)
 
     def atualizar_dados(self):
+        if not self.winfo_exists():  # Verifica se a janela ainda existe
+            return  # Sai da função para evitar erro
+
         # atualiza os dados quando for editado
         self.pegar_infos_pet()  # Recarrega os dados do banco
         self.widgets_view()  # Recria os widgets com os novos dados
 
     def deletar_pet(self):
-        ...
+        self.withdraw()
+        self.toplevel_window = PetDeleteView(self, self.id_pet_view)
 
     def voltar_tela(self):
         if self.master:

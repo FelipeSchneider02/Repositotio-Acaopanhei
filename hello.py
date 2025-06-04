@@ -69,9 +69,7 @@ class Hello(ctk.CTk):
                 self.toplevel_window = Main(self.id_usuario_logado)
                 self.withdraw()  # esconde a tela App
                 self.toplevel_window.focus()  # focar tela
-                self.errologin_label.configure(text="")  # tira a mensagem de erro de login se tiver
-                self.login_entry.delete(0, "end")  # limpa campo login
-                self.password_entry.delete(0, "end")  # limpa campo password
+                self.limpar_campos()
             else:
                 self.errologin_label.configure(text="Login ou senha incorreto")
                 self.errologin_label.place(x=142, y=210)
@@ -84,8 +82,12 @@ class Hello(ctk.CTk):
         self.toplevel_window = TelaRegistro(self)  # chama a Tela de Registro
         self.withdraw()  # esconde a tela
         self.toplevel_window.focus()  # focar tela
+        self.limpar_campos()
+
+    def limpar_campos(self):
         self.login_entry.delete(0, "end")  # limpa campo login
         self.password_entry.delete(0, "end")  # limpa compo password
+        self.errologin_label.configure(text="")  # tira a mensagem de erro de login se tiver
 
 
 # Obtém o diretório correto, independentemente de ser script ou executável
